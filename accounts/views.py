@@ -1,3 +1,4 @@
+import os
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,12 +12,13 @@ from beneficiaries.models import Beneficiary
 
 
 def set_auth_cookies(response, user):
+    live = os.path.exists('/home/ngoconnect')
+    samesite = 'None' if live else 'Lax'
     refresh = RefreshToken.for_user(user)
     access = str(refresh.access_token)
-    response.set_cookie(key='access_token', value=access, httponly=True, secure=False, samesite='Lax', max_age=60 * 60)
-    response.set_cookie(key='refresh_token', value=str(refresh), httponly=True, secure=False, samesite='Lax', max_age=60 * 60 * 24 * 7)
+    response.set_cookie(key='access_token', value=access, httponly=True, secure=live, samesite=samesite, max_age=60 * 60)
+    response.set_cookie(key='refresh_token', value=str(refresh), httponly=True, secure=live, samesite=samesite, max_age=60 * 60 * 24 * 7)
     return response
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
