@@ -8,7 +8,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'confirm_password', 'role', 'phone')
+        fields = ('username', 'email', 'password', 'confirm_password', 'phone')
+        
+        def validate_email(self, value):
+        if CustomUser.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError('This email is already registered')
+        return value
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -21,7 +26,7 @@ class RegisterSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             email=validated_data['email'],
             password=validated_data['password'],
-            role=validated_data.get('role', 'user'),
+            role=validated_data.get( 'user'),
             phone=validated_data.get('phone', ''),
         )
         return user

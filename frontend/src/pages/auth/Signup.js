@@ -54,13 +54,7 @@ function Signup() {
             <label style={styles.label}>Phone</label>
             <input style={styles.input} name="phone" placeholder="Enter phone" value={form.phone} onChange={handleChange} />
           </div>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Role *</label>
-            <select style={styles.input} name="role" value={form.role} onChange={handleChange}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+          
         </div>
         <button style={styles.btn} onClick={handleSubmit} disabled={loading}>
           {loading ? 'Creating Account...' : 'Sign Up'}
