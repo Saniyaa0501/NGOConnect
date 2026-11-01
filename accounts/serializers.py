@@ -16,6 +16,11 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('This email is already registered')
         return value
 
+    def validate_phone(self, value):
+        if not re.fullmatch(r'\d{10}', value or ''):
+            raise serializers.ValidationError('Phone number must be exactly 10 digits')
+        return value
+
     def validate(self, attrs):
         pw = attrs['password']
         if pw != attrs['confirm_password']:
