@@ -13,6 +13,7 @@ function Signup() {
   const handleSubmit = async () => {
     if (!form.username || !form.email || !form.password || !form.confirm_password) return setError('Fill all required fields');
     if (form.password !== form.confirm_password) return setError('Passwords do not match');
+    if (form.password.length < 8 || !/[A-Z]/.test(form.password) || !/[a-z]/.test(form.password) || !/\d/.test(form.password) || !/[^A-Za-z0-9]/.test(form.password)) return setError('Password must be 8+ characters with a capital letter, small letter, number and special character');
     setLoading(true);
     setError('');
     try {
@@ -21,7 +22,7 @@ function Signup() {
       if (res.data.user.role === 'admin') navigate('/admin/dashboard');
       else navigate('/user/dashboard');
     } catch (err) {
-      setError(err.response?.data?.email?.[0] || err.response?.data?.username?.[0] || 'Registration failed');
+      setError(err.response?.data?.email?.[0] || err.response?.data?.username?.[0] || err.response?.data?.password?.[0] || 'Registration failed');
     }
     setLoading(false);
   };

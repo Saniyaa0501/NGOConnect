@@ -1,3 +1,4 @@
+import re
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
@@ -16,8 +17,12 @@ class RegisterSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['confirm_password']:
+        pw = attrs['password']
+        if pw != attrs['confirm_password']:
             raise serializers.ValidationError({'password': 'Passwords do not match'})
+        if (len(pw) < 8 or not re.search(r'[A-Z]', pw) or not re.search(r'[a-z]', pw)
+                or not re.search(r'\d', pw) or not re.search(r'[^A-Za-z0-9]', pw)):
+            raise serializers.ValidationError({'password': 'Password must be 8+ characters with a capital letter, small letter, number and special character'})
         return attrs
 
     def create(self, validated_data):
